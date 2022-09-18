@@ -1,9 +1,11 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
+import NewPersonPopup from './components/NewPersonPopup';
 
 function App() {
 
   const [data, setData] = useState([]);
+  const [createPersonPopup, setCreatePersonPopup] = useState(false);
 
   /*    GET initial data on page load    */
   useEffect(() => {
@@ -17,8 +19,13 @@ function App() {
     getData();
 }, []);
 
+const newUser = () => {
+  setCreatePersonPopup(true);
+}
+
   return (
     <>
+    {createPersonPopup ? <NewPersonPopup setCreatePersonPopup={setCreatePersonPopup}/> : null}
     <table>
       <thead></thead>
       <tbody>
@@ -38,6 +45,7 @@ function App() {
         ))}
         </tbody>
       </table>
+      <button onClick={() => newUser()}>Create new</button>
       </>
   );
 }
