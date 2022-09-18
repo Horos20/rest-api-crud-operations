@@ -1,11 +1,13 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import NewPersonPopup from './components/NewPersonPopup';
+import EditPersonPopup from './components/EditPersonPopup';
 
 function App() {
 
   const [data, setData] = useState([]);
   const [createPersonPopup, setCreatePersonPopup] = useState(false);
+  const [editPersonPopup, setEditPersonPopup] = useState(false);
 
   /*    GET initial data on page load    */
   useEffect(() => {
@@ -21,19 +23,26 @@ function App() {
 
 const newUser = () => {
   setCreatePersonPopup(true);
+  setEditPersonPopup(false);
+}
+
+const editUser = (id) => {
+  setEditPersonPopup(true);
+  setCreatePersonPopup(false);
 }
 
   return (
     <>
     {createPersonPopup ? <NewPersonPopup setCreatePersonPopup={setCreatePersonPopup}/> : null}
+    {editPersonPopup ? <EditPersonPopup setEditPersonPopup={setEditPersonPopup}/> : null}
     <table>
-      <thead></thead>
       <tbody>
       <tr>
         <th>Id</th>
         <th>Email</th>
         <th>First name</th>
         <th>Last name</th>
+        <th></th>
       </tr>
       {data.data && data.data.map((row, i) => (
           <tr key={i}>
@@ -41,6 +50,7 @@ const newUser = () => {
             <td>{row.email}</td>
             <td>{row.first_name}</td>
             <td>{row.last_name}</td>
+            <td><button onClick={() => editUser(row.id)}>Edit</button></td>
           </tr>
         ))}
         </tbody>
