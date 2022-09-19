@@ -7,7 +7,7 @@ function App() {
 
   const [data, setData] = useState([]);
   const [createPersonPopup, setCreatePersonPopup] = useState(false);
-  const [editPersonPopup, setEditPersonPopup] = useState(false);
+  const [editPerson, setEditPerson] = useState(null);
 
   /*    GET initial data on page load    */
   useEffect(() => {
@@ -16,25 +16,25 @@ function App() {
     ).then (res => {
         return res.json()
     }).then (data => {
-      setData(data)
+      setData(data.data)
     })}
     getData();
 }, []);
 
 const newUser = () => {
   setCreatePersonPopup(true);
-  setEditPersonPopup(false);
+  setEditPerson(null);
 }
 
 const editUser = (id) => {
-  setEditPersonPopup(true);
+  setEditPerson(<EditPersonPopup setData={setData} data={data} id={id}/>);
   setCreatePersonPopup(false);
 }
 
   return (
     <>
-    {createPersonPopup ? <NewPersonPopup setCreatePersonPopup={setCreatePersonPopup}/> : null}
-    {editPersonPopup ? <EditPersonPopup setEditPersonPopup={setEditPersonPopup}/> : null}
+    {createPersonPopup ? <NewPersonPopup setCreatePersonPopup={setCreatePersonPopup} setData={setData} data={data}/> : null}
+    {editPerson}
     <table>
       <tbody>
       <tr>
@@ -44,7 +44,7 @@ const editUser = (id) => {
         <th>Last name</th>
         <th></th>
       </tr>
-      {data.data && data.data.map((row, i) => (
+      {data && data.map((row, i) => (
           <tr key={i}>
             <td>{row.id}</td>
             <td>{row.email}</td>

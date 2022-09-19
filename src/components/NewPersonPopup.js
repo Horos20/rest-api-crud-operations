@@ -34,7 +34,7 @@ export default function NewPersonPopup( props ) {
                 })
             }).then(res => {
                 return res.json()
-            }).then(data => {alert('New user created!\nEmail: ' + data.email + "\nFirst name: " + data.first_name + "\nLast name: " + data.last_name)})
+            }).then(data => {props.setData(prev => [...prev, data])})
     }
   return (
     <div id='newPersonPopup'>

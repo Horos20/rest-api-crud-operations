@@ -20,6 +20,16 @@ export default function EditPersonPopup( props ) {
     
       const { email, first_name, last_name } = formValue;
 
+      const updateState = () => {
+        const newState = props.data.map(obj => {
+          if (obj.id === props.id) {
+            return {id: props.id, email: email, first_name: first_name, last_name: last_name};
+          }
+          return obj;
+        });
+        return newState;
+      };
+
     const editPerson = async (e) => {
         e.preventDefault();
         await fetch('https://reqres.in/api/users/2', {
@@ -34,7 +44,7 @@ export default function EditPersonPopup( props ) {
                 })
             }).then(res => {
                 return res.json()
-            }).then(data => {alert('User updated!\nEmail: ' + data.email + "\nFirst name: " + data.first_name + "\nLast name: " + data.last_name)})
+            }).then(data => {props.setData(updateState())})
     }
   return (
     <div id='editPersonPopup'>
