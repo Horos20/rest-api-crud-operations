@@ -31,6 +31,15 @@ const editUser = (id) => {
   setCreatePersonPopup(false);
 }
 
+const deleteUser = async (id) => {
+  await fetch(`https://reqres.in/api/users/` + id, {method: 'DELETE'}
+  ).then (res => {
+    return res.text()
+  }).then (df => {
+    setData(data.filter(element => element.id !== id))
+  })
+}
+
   return (
     <>
     {createPersonPopup ? <NewPersonPopup setCreatePersonPopup={setCreatePersonPopup} setData={setData} data={data}/> : null}
@@ -51,6 +60,7 @@ const editUser = (id) => {
             <td>{row.first_name}</td>
             <td>{row.last_name}</td>
             <td><button onClick={() => editUser(row.id)}>Edit</button></td>
+            <td><button onClick={() => deleteUser(row.id)}>Delete</button></td>
           </tr>
         ))}
         </tbody>
