@@ -12,7 +12,7 @@ function App() {
   /*    GET initial data on page load    */
   useEffect(() => {
     const getData = async () => {
-      return await fetch('https://reqres.in/api/users?page=2', {method: 'GET'}
+      return await fetch('https://dummy.restapiexample.com/api/v1/employees', {method: 'GET'}
     ).then (res => {
         return res.json()
     }).then (data => {
@@ -27,17 +27,19 @@ const newUser = () => {
 }
 
 const editUser = (id) => {
-  setEditPerson(<EditPersonPopup setData={setData} data={data} id={id}/>);
+  setEditPerson(<EditPersonPopup setData={setData} data={data} id={id} setEditPerson={setEditPerson}/>);
   setCreatePersonPopup(false);
 }
 
 const deleteUser = async (id) => {
-  await fetch(`https://reqres.in/api/users/` + id, {method: 'DELETE'}
+  await fetch(`https://dummy.restapiexample.com/api/v1/delete/2`, {method: 'DELETE'}
   ).then (res => {
     return res.text()
   }).then (df => {
     setData(data.filter(element => element.id !== id))
   })
+  setCreatePersonPopup(false);
+  setEditPerson(null);
 }
 
   return (
@@ -48,17 +50,17 @@ const deleteUser = async (id) => {
       <tbody>
       <tr>
         <th>Id</th>
-        <th>Email</th>
-        <th>First name</th>
-        <th>Last name</th>
+        <th>Name</th>
+        <th>Salary</th>
+        <th>Age</th>
         <th></th>
       </tr>
       {data && data.map((row, i) => (
           <tr key={i}>
             <td>{row.id}</td>
-            <td>{row.email}</td>
-            <td>{row.first_name}</td>
-            <td>{row.last_name}</td>
+            <td>{row.employee_name}</td>
+            <td>{row.employee_salary}</td>
+            <td>{row.employee_age}</td>
             <td><button onClick={() => editUser(row.id)}>Edit</button></td>
             <td><button onClick={() => deleteUser(row.id)}>Delete</button></td>
           </tr>

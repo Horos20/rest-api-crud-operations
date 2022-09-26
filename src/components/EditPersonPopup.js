@@ -3,9 +3,9 @@ import React, {useState} from 'react';
 export default function EditPersonPopup( props ) {
 
     const [formValue, setFormValue] = useState({
-        email: "",
-        first_name: "",
-        last_name: "",
+        employee_name: "",
+        employee_salary: "",
+        employee_age: "",
       });
     
       const handleChange = (event) => {
@@ -18,12 +18,12 @@ export default function EditPersonPopup( props ) {
         });
       };
     
-      const { email, first_name, last_name } = formValue;
+      const { employee_name, employee_salary, employee_age } = formValue;
 
       const updateState = () => {
         const newState = props.data.map(obj => {
           if (obj.id === props.id) {
-            return {id: props.id, email: email, first_name: first_name, last_name: last_name};
+            return {id: props.id, employee_name: employee_name, employee_salary: employee_salary, employee_age: employee_age};
           }
           return obj;
         });
@@ -32,30 +32,30 @@ export default function EditPersonPopup( props ) {
 
     const editPerson = async (e) => {
         e.preventDefault();
-        await fetch('https://reqres.in/api/users/2', {
+        await fetch('https://dummy.restapiexample.com/api/v1/update/21', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    email: email,
-                    first_name: first_name,
-                    last_name: last_name
+                    employee_name: employee_name,
+                    employee_salary: employee_salary,
+                    employee_age: employee_age
                 })
             }).then(res => {
                 return res.json()
-            }).then(data => {props.setData(updateState())})
+            }).then(data => {props.setData(updateState()); props.setEditPerson(null)})
     }
   return (
     <div id='editPersonPopup'>
         <h1>Edit person</h1>
         <form>
-            <label>First name</label>
-            <input type='text' name='first_name' value={first_name} onChange={handleChange}/>
-            <label>Last name</label>
-            <input type='text' name='last_name' value={last_name} onChange={handleChange}/>
-            <label>Email</label>
-            <input type='text' name='email' value={email} onChange={handleChange}/>
+        <label>Name</label>
+            <input type='text' name='employee_name' value={employee_name} onChange={handleChange}/>
+            <label>Salary</label>
+            <input type='text' name='employee_salary' value={employee_salary} onChange={handleChange}/>
+            <label>Age</label>
+            <input type='text' name='employee_age' value={employee_age} onChange={handleChange}/>
             <button type='submit' onClick={(e) => editPerson(e)}>Update</button>
             <button onClick={() => props.setEditPersonPopup(false)}>Cancel</button>
         </form>
