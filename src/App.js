@@ -56,7 +56,7 @@ const deleteUser = async (id) => {
         <th></th>
       </tr>
       {data && data.map((row, i) => (
-          <tr key={i}>
+          <tr key={i} id={row.id}>
             <td>{row.id}</td>
             <td>{row.employee_name}</td>
             <td>{row.employee_salary}</td>
