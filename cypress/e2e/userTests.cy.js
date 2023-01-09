@@ -1,8 +1,6 @@
-// Dealing with trash api. Tests work but will fail sometimes because api is slow and/or won't return data.
 describe('Users', () => {
 
   beforeEach(() => {
-    // Trash api, have to run tests several times because if you make too many requests in a short time, the api will block you.
     cy.wait(1000);
     cy.visit('http://localhost:3000/')
   });

@@ -20,10 +20,10 @@ export default function EditPersonPopup( props ) {
     
       const { employee_name, employee_salary, employee_age } = formValue;
 
-      const updateState = () => {
+      const updateState = (data) => {
         const newState = props.data.map(obj => {
           if (obj.id === props.id) {
-            return {id: props.id, employee_name: employee_name, employee_salary: employee_salary, employee_age: employee_age};
+            return {id: props.id, employee_name: data.employee_name, employee_salary: data.employee_salary, employee_age: data.employee_age, profile_image: data.profile_image};
           }
           return obj;
         });
@@ -32,7 +32,7 @@ export default function EditPersonPopup( props ) {
 
     const editPerson = async (e) => {
         e.preventDefault();
-        await fetch('https://dummy.restapiexample.com/api/v1/update/21', {
+        await fetch(`http://localhost:8080/${props.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -40,11 +40,11 @@ export default function EditPersonPopup( props ) {
                 body: JSON.stringify({
                     employee_name: employee_name,
                     employee_salary: employee_salary,
-                    employee_age: employee_age
+                    employee_age: employee_age,
                 })
             }).then(res => {
                 return res.json()
-            }).then(data => {props.setData(updateState()); props.setEditPerson(null)})
+            }).then(data => {props.setData(updateState(data.data[0])); props.setEditPerson(null); props.socket.emit("update_message", props.id, employee_name, employee_age, employee_salary)})
     }
   return (
     <div id='editPersonPopup'>

@@ -22,7 +22,7 @@ export default function NewPersonPopup( props ) {
 
     const createNewPerson = async (e) => {
         e.preventDefault();
-        await fetch('https://dummy.restapiexample.com/api/v1/create', {
+        await fetch('http://localhost:8080', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -34,7 +34,7 @@ export default function NewPersonPopup( props ) {
                 })
             }).then(res => {
                 return res.json()
-            }).then(data => {props.setData(prev => [...prev, data.data]); props.setCreatePersonPopup(false)})
+            }).then(data => {props.setData(props.data.concat(data.data[0])); props.setCreatePersonPopup(false); props.socket.emit("new_message", data.data[0].id , employee_name, employee_age, employee_salary)})
     }
   return (
     <div id='newPersonPopup'>
