@@ -1,0 +1,61 @@
+name: Cypress Tests
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout front-end repository
+      uses: actions/checkout@v2
+
+    - name: Checkout back-end repository
+      uses: actions/checkout@v2
+      with:
+        repository: Horos20/rest-api-crud-nodejs
+        ref: master
+        path: ../rest-api-crud-nodejs
+
+    - name: Install dependencies
+      run: |
+        cd ../rest-api-crud-nodejs && npm install
+        cd ../rest-api-crud-operations && npm install
+
+    - name: Start the database
+      uses: docker://postgres:13.2
+      with:
+        env: |
+          POSTGRES_USER=postgres
+          POSTGRES_PASSWORD=postgres
+          POSTGRES_DB=horos
+        ports: |
+          5432:5432
+        args: -c max_connections=200
+
+    - name: Wait for the database to start
+      run: |
+        npx wait-on tcp:localhost:5432 -t 30000
+
+    - name: Create database schema and data
+      run: |
+        cd ../rest-api-crud-nodejs
+        npx prisma migrate dev
+
+    - name: Start the backend API
+      run: |
+        cd ../rest-api-crud-nodejs
+        npm start
+
+    - name: Wait for the backend API to start
+      run: |
+        cd ../rest-api-crud-operations
+        npx wait-on http://localhost:8000
+
+    - name: Run Cypress tests
+      uses: cypress-io/github-action@v2
+      with:
+        start: npm run start
+        wait-on: 'http://localhost:3000'
