@@ -8,6 +8,19 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
     - name: Checkout front-end repository
       uses: actions/checkout@v2
@@ -17,23 +30,12 @@ jobs:
       with:
         repository: Horos20/rest-api-crud-nodejs
         ref: master
-        path: ../rest-api-crud-nodejs
+        path: rest-api-crud-nodejs
 
     - name: Install dependencies
       run: |
         cd ../rest-api-crud-nodejs && npm install
         cd ../rest-api-crud-operations && npm install
-
-    - name: Start the database
-      uses: docker://postgres:13.2
-      with:
-        env: |
-          POSTGRES_USER=postgres
-          POSTGRES_PASSWORD=postgres
-          POSTGRES_DB=horos
-        ports: |
-          5432:5432
-        args: -c max_connections=200
 
     - name: Wait for the database to start
       run: |
@@ -41,21 +43,20 @@ jobs:
 
     - name: Create database schema and data
       run: |
-        cd ../rest-api-crud-nodejs
-        npx prisma migrate dev
+        cd ./rest-api-crud-nodejs && npx prisma migrate dev
 
     - name: Start the backend API
       run: |
-        cd ../rest-api-crud-nodejs
-        npm start
+        cd ./rest-api-crud-nodejs && npm start &
 
     - name: Wait for the backend API to start
       run: |
-        cd ../rest-api-crud-operations
-        npx wait-on http://localhost:8000
+        npx wait-on http://localhost:8080
+
+    - name: Start the frontend
+      run: |
+        npm start &
 
     - name: Run Cypress tests
-      uses: cypress-io/github-action@v2
-      with:
-        start: npm run start
-        wait-on: 'http://localhost:3000'
+      run: |
+        npm test
