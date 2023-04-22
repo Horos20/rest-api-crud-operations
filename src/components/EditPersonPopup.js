@@ -37,6 +37,7 @@ export default function EditPersonPopup( props ) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     employee_name: employee_name,
                     employee_salary: employee_salary,
