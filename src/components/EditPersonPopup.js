@@ -44,8 +44,15 @@ export default function EditPersonPopup( props ) {
                     employee_age: employee_age,
                 })
             }).then(res => {
-                return res.json()
+                if (res.status === 401) {
+                  throw new Error('Unauthorized');
+                } else {
+                  return res.json();
+                }
             }).then(data => {props.setData(updateState(data.data[0])); props.setEditPerson(null); props.socket.emit("update_message", props.id, employee_name, employee_age, employee_salary)})
+            .catch((error) => {
+              console.log(error);
+            });
     }
   return (
     <div id='editPersonPopup'>

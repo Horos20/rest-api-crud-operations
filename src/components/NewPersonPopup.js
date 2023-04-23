@@ -30,7 +30,8 @@ export default function NewPersonPopup( props ) {
                 body: JSON.stringify({
                     employee_name: employee_name,
                     employee_salary: employee_salary,
-                    employee_age: employee_age
+                    employee_age: employee_age,
+                    owner_id: props.owner_id
                 })
             }).then(res => {
                 return res.json()

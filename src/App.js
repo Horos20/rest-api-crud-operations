@@ -9,7 +9,7 @@ function App() {
   const [createPersonPopup, setCreatePersonPopup] = useState(false);
   const [editPerson, setEditPerson] = useState(null);
   const [socket, setCurrentSocket] = useState(null);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({name: null, user_id: null});
 
   const dataRef = useRef(data);
   const setData = (data) => {
@@ -110,7 +110,7 @@ function App() {
     setEditPerson(null);
   };
 
-  const login = async (user) => {
+  const login = async (user, user_id) => {
     await fetch(`http://localhost:8080/login`, {
       method: "POST",
       headers: {
@@ -118,14 +118,15 @@ function App() {
       },
       credentials: 'include',
       body: JSON.stringify({
-        user: user,
+        name: user,
+        user_id: user_id,
       }),
     })
       .then((res) => {
         return res.json();
       })
       .then((data) => {
-        setUser(data.user);
+        setUser({name: data.user.name, user_id: data.user.user_id});
       });
   };
 
@@ -138,27 +139,25 @@ function App() {
       credentials: 'include',
     })
       .then((res) => {
-        return res.json();
+        setUser({name: null, user_id: null});
       })
-      .then((data) => {
-        setUser(data.user);
-      });
   }
 
   return (
     <>
       <div>
-        <button onClick={() => login("Jack")}>Jack</button>
-        <button onClick={() => login("John")}>John</button>
+        <button onClick={() => login("Jack", 1)}>Jack</button>
+        <button onClick={() => login("John", 2)}>John</button>
         <button onClick={() => logout(null)}>Logout</button>
       </div>
-      <p>User {user}</p>
+      <p>User {user.name}</p>
       {createPersonPopup ? (
         <NewPersonPopup
           setCreatePersonPopup={setCreatePersonPopup}
           setData={setData}
           data={data}
           socket={socket}
+          owner_id={user}
         />
       ) : null}
       {editPerson}
